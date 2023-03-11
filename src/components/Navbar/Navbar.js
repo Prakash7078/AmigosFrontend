@@ -8,9 +8,14 @@ const Navbar = () => {
     const classes=useStyles();
     const {state,dispatch:ctxDispatch}=useContext(Store);
     const {userInfo}=state;
+    const {userName}=state;
     const signoutHandler=()=>{
         ctxDispatch({type:'USER_SIGNOUT'});
         localStorage.removeItem('userInfo');
+    }
+    const googleSignout=()=>{
+        ctxDispatch({type:'GOOGLE_SIGNOUT'});
+        localStorage.removeItem('userName');
     }
     return (
         <AppBar className={classes.appBar} position="static" color="inherit">
@@ -19,14 +24,19 @@ const Navbar = () => {
                 <img className={classes.image} src={amigos} alt="icon" height="60" />
             </div>
             <Toolbar className={classes.toolbar}>
-                {userInfo ? (
+                {userInfo?.data?(
                     <div className={classes.profile}>
                         <Avatar className={classes.purple} alt={userInfo.data.name} >{userInfo.data.name.charAt(0)}</Avatar>
                         <Typography className={classes.userName} variant="h6">{userInfo.data.name}</Typography>
                         <Button variant="contained" onClick={signoutHandler}className={classes.logout} color="secondary">Logout</Button>
                     </div>
                 ):(
-                    <Button component={Link} to="/signup" variant="contained" color="primary">signIn</Button>
+                    <div className={classes.profile}>
+                        <Typography className={classes.userName} variant="h6">{userName}</Typography>
+                        {userName &&<Button variant="contained" onClick={googleSignout}className={classes.logout} color="secondary">Logout</Button>}
+                        {!userName &&<Button component={Link} to="/signup" variant="contained" color="primary">signIn</Button>}
+                    </div>
+                   
                 )}
             </Toolbar>
         </AppBar>

@@ -1,8 +1,8 @@
 .login_container {
-
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	padding-bottom:15vh;
 }
 
 .login_form_container {

@@ -9,3 +9,9 @@ footer{
     margin-left: 27%;
     margin-top: 10px;
 }
+.main-img{
+    border-radius: 50px;
+    width: 30vw;
+    height: 60vh;
+    margin: 10px 35%;
+}

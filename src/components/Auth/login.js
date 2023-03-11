@@ -4,13 +4,15 @@ import { Link, useNavigate } from "react-router-dom";
 import  "./login.css";
 import { Store } from "../../Store";
 import { toast } from 'react-toastify';
+import jwt_decode from "jwt-decode";
 import { getError } from "../../utils";
+import { GoogleLogin } from '@react-oauth/google';
 const Login = () => {
 	const [data, setData] = useState({ email: "", password: "" });
 	const [error, setError] = useState("");
     const navigate=useNavigate();
-    const[click,setClick]=useState('false');
     const {state,dispatch:ctxDispatch}=useContext(Store);
+	const {userName}=state;
     const {userInfo}=state;
 	const handleChange = ({ currentTarget: input }) => {
 		setData({ ...data, [input.name]: input.value });
@@ -25,17 +27,19 @@ const Login = () => {
             ctxDispatch({type:'USER_SIGNIN',payload:res});
             localStorage.setItem('userInfo',JSON.stringify(res));
             navigate('/');
-             alert('login succesfull');
+            alert('login succesfull');
         }catch(error){ 
             alert('login failed');
             toast.error(getError(error));
         }
 	};
     useEffect(()=>{
-        if(!userInfo){
-            navigate('/login');
-        }
-    },[navigate,click,userInfo]);
+        if(userInfo || userName){
+            navigate('/');
+        }else{
+			navigate('/login');
+		}
+    },[navigate,userName,userInfo]);
 	return (
 		<div className='login_container'>
 			<div className='login_form_container'>
@@ -64,6 +68,19 @@ const Login = () => {
 						<button type="submit" className='green_btn'>
 							Sign in
 						</button>
+						<GoogleLogin
+						onSuccess={credentialResponse => {
+							console.log(credentialResponse);
+							var decoded = jwt_decode(credentialResponse.credential);
+            				ctxDispatch({type:'GOOGLE_SIGNIN',payload:decoded.name});
+            				localStorage.setItem('userName',decoded.name);
+							navigate('/');
+							console.log(userName);
+						}}
+						onError={() => {
+							console.log('Login Failed');
+						}}
+						/>
 					</form>
 				</div>
 				<div className='right'>
