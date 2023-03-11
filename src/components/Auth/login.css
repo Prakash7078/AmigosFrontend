@@ -2,7 +2,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding-bottom:15vh;
+	margin-bottom:20vh;
 }
 
 .login_form_container {
